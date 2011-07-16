@@ -11,8 +11,11 @@ var worldCupChampions = {
 		 * Source: http://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_finals
 	     */
 		script.src = "http://query.yahooapis.com/v1/public/yql?q=select%20content%20from%20html%20where%20url%3D%22http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FList_of_FIFA_World_Cup_finals%22%20and%20xpath%3D'%2F%2Ftable%5B2%5D%2Ftr%2Ftd%5Bposition()%3C3%5D%2Fa'&format=json&callback=worldCupChampions.formatData";
-	    head.appendChild(script);
-		head.removeChild(script);
+
+		script.onload = function() {
+			(head && script.parentNode) && head.removeChild(script);
+		};
+		head.appendChild(script);
 	},
 	formatData : function(response) {
 	    var json = response.query.results.a,
@@ -26,7 +29,7 @@ var worldCupChampions = {
 	},
 
 	/*
-	 * Random Color Generator
+	 * Random Color Generator.
 	 * http://www.redips.net/javascript/random-color-generator/
 	 */
 	randomColor : function() {
