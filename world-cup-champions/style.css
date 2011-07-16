@@ -1,5 +1,5 @@
 body { font-family: helvetica; }  
-section { width: 800px; position: relative; }
+section { width: 1000px; position: relative; }
 h1 { font-weight: bold; text-align: center; padding: 10px; }  
 ul { text-align: center; }
-ul li { display: inline-block; }
+ul li { display: inline-block; text-align: center; margin: 0 5px; }

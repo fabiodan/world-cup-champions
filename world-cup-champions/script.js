@@ -41,8 +41,29 @@ var worldCupChampions = {
 	    }
 	    return color;
 	},
+	
+	// To do: refactoring this method.
+	buildDom : function(data) {
+		var htmlYears = "",
+			htmlTeams = "",
+			memo = {};
+
+		for (var i in data) {
+			htmlYears += "<li>" + i + "</li>";
+			if (!memo[data[i]]) {
+				memo[data[i]] = i;
+				htmlTeams += "<li>" + data[i] + "</li>";				
+			}
+		}
+		document.querySelector("#years").innerHTML = htmlYears;
+		document.querySelector("#teams").innerHTML = htmlTeams;
+	},
+
+	// To do: refactoring this method.
 	buildGraph : function(data) {
-		var graph = document.getElementById("graph"),
+		this.buildDom(data);
+
+		var graph = document.querySelector("#graph"),
 			ctx = graph.getContext("2d"),
 			years = document.querySelectorAll("#years li"), // To do: generate the elements dinamically relying on json data.
 			teams = document.querySelectorAll("#teams li"),
@@ -86,4 +107,4 @@ var worldCupChampions = {
 	}
 };
 
-worldCupChampions.init({"Brazil" : "green", "Italy" : "blue"});
+worldCupChampions.init({"Brazil" : "green", "Italy" : "blue", "Spain" : "#C60B1E", "West Germany" : "#FFCE00"});
