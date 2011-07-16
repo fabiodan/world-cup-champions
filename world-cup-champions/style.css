@@ -1,4 +1,4 @@
-body { margin: 0; padding: 0; font-family: helvetica; }  
+body { font-family: helvetica; }  
 section { width: 800px; position: relative; }
 h1 { font-weight: bold; text-align: center; padding: 10px; }  
 ul { text-align: center; }
