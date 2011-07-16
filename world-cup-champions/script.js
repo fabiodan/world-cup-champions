@@ -1,7 +1,8 @@
 var worldCupChampions = {
-	teamsColors : null,
-	init : function(teamsColors) {
-		this.teamsColors = teamsColors;
+	data : {},
+	colors : null,
+	init : function(colors) {
+		this.colors = colors;
 		this.getJson();
 	},
 	getJson : function() {
@@ -20,13 +21,12 @@ var worldCupChampions = {
 		head.appendChild(script);
 	},
 	formatData : function(response) {
-	    var json = response.query.results.a,
-	        data = {};
+	    var json = response.query.results.a;
 
 	    for (var i in json) {
-	        (i % 2 == 1) && (data[json[i - 1]] = json[i]);
+	        (i % 2 == 1) && (this.data[json[i - 1]] = json[i]);
 	    }
-		this.buildGraph(data);
+		this.buildGraph();
 	},
 
 	/*
@@ -36,34 +36,38 @@ var worldCupChampions = {
 	randomColor : function() {
     	return '#' + ('00000' + (Math.random() * 16777216 << 0).toString(16)).substr(-6);
 	},
-	
-	// To do: refactoring this method.
-	buildDom : function(data) {
+	buildDom : function() {
 		var htmlYears = "",
 			htmlTeams = "",
 			memo = {};
 
-		for (var i in data) {
+		for (var i in this.data) {
 			htmlYears += "<li>" + i + "</li>";
-			if (!memo[data[i]]) {
-				memo[data[i]] = i;
-				htmlTeams += "<li>" + data[i] + "</li>";				
+			if (!memo[this.data[i]]) {
+				memo[this.data[i]] = i;
+				htmlTeams += "<li>" + this.data[i] + "</li>";				
 			}
 		}
 		document.querySelector("#years").innerHTML = htmlYears;
 		document.querySelector("#teams").innerHTML = htmlTeams;
 	},
 
-	// To do: refactoring this method.
-	buildGraph : function(data) {
-		this.buildDom(data);
+	// To do: Draw the target lines only in the end.
+	buildGraph : function(target) {
+		this.buildDom();
 
 		var graph = document.querySelector("#graph"),
 			ctx = graph.getContext("2d"),
-			years = document.querySelectorAll("#years li"), // To do: generate the elements dinamically relying on json data.
+			years = document.querySelectorAll("#years li"),
 			teams = document.querySelectorAll("#teams li"),
 			graphHeight = graph.offsetHeight,
-	    	memo = this.teamsColors || {};
+	    	colors = this.colors || {};
+
+		// Cleaning the canvas.
+		ctx.clearRect (0, 0, 1000, 500);
+
+		// Adding an mouseover listener on teams.
+		document.querySelector("#teams").onmouseover = this.mouseoverHandler;
 
 	    for (var i = 0; i < years.length; i++) {
 
@@ -76,18 +80,20 @@ var worldCupChampions = {
 	            var team = teams[j].firstChild.nodeValue;
 
 	            // Setting one color for each team.
-	            !memo[team] && (memo[team] = this.randomColor());
+	            !colors[team] && (colors[team] = this.randomColor());
 
-	            if (team == data[year]) {
+	            if (team == this.data[year]) {
 
 			        // Getting the "team" element coordinates.
 	                var teamLeftPos = teams[j].offsetLeft,
 	                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
 
 	                // Initializing graph properties.
-	                ctx.fillStyle = memo[team];
-	                ctx.globalAlpha = 0.3;
-
+	                ctx.fillStyle = colors[team];
+					
+					// Highlight on mouseover.
+					team == target ? ctx.globalAlpha = 1 : ctx.globalAlpha = 0.3;
+									
 	                // Drawing the graph.
 	                ctx.beginPath();
 	                ctx.moveTo(yearLeftPos, 0);
@@ -99,6 +105,9 @@ var worldCupChampions = {
 	            }
 	        }
 	    }		
+	},
+	mouseoverHandler : function(e) {
+		worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
 	}
 };
 
