@@ -1,32 +1,40 @@
-// To do: get data via YQL from Wikipedia / Fifa website.
-var data = {
-    "1930" : "Uruguay",
-    "1934" : "Italy",
-    "1938" : "Italy",
-    "1950" : "Uruguay",
-    "1954" : "West Germany",
-    "1958" : "Brazil",
-    "1962" : "Brazil",
-    "1966" : "England",
-    "1970" : "Brazil",
-    "1974" : "West Germany",
-    "1978" : "Argentina",
-    "1982" : "Italy",
-    "1986" : "Argentina",
-    "1990" : "West Germany",
-    "1994" : "Brazil",
-    "1998" : "France",
-    "2002" : "Brazil",
-    "2006" : "Italy",
-    "2010" : "Spain"
-};
+
+// To do: Refactoring all code in one object with a "init" call. 
+function getJson() {
+    var head = document.querySelector("head") || document.documentElement,
+        script = document.createElement("script");
+
+	// YQL Query. Source: http://en.wikipedia.org/wiki/List_of_FIFA_World_Cup_finals
+    script.src = "http://query.yahooapis.com/v1/public/yql?q=select%20content%20from%20html%20where%20url%3D%22http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FList_of_FIFA_World_Cup_finals%22%20and%20xpath%3D'%2F%2Ftable%5B2%5D%2Ftr%2Ftd%5Bposition()%3C3%5D%2Fa'&format=json&callback=formatData";
+    head.appendChild(script);
+	head.removeChild(script);
+}
+
+function formatData(response) {
+    var json = response.query.results.a,
+        data = {};
+
+    for (var i in json) {
+        if (i % 2 == 1) {
+            data[json[i - 1]] = json[i];
+        } 
+    }
+
+	buildGraph(
+	    data,
+	    {
+	        "Brazil" : "green",
+	        "Italy" : "blue"
+	    }
+	);
+}
 
 var graph = document.getElementById("graph");
 var ctx = graph.getContext("2d");
 
 // To do: generate the elements dinamically relying on json data.
-var years = document.getElementById("years").getElementsByTagName("li");
-var teams = document.getElementById("teams").getElementsByTagName("li");
+var years = document.querySelectorAll("#years li");
+var teams = document.querySelectorAll("#teams li");
 
 /*
  * Random Color Generator
@@ -59,8 +67,8 @@ function buildGraph(data, teamsColors) {
             !memo[team] && (memo[team] = randomColor());
             
             if (team == data[year]) {
-                var teamLeftPos = teams[j].offsetLeft;
-                var teamRightPos = teamLeftPos + teams[j].offsetWidth;
+                var teamLeftPos = teams[j].offsetLeft,
+                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
     
                 // Initializing graph properties.
                 ctx.fillStyle = memo[team];
@@ -90,11 +98,4 @@ function buildGraph(data, teamsColors) {
     }
 };
 
-buildGraph(
-    data,
-    {
-        "Brazil" : "green",
-        "Italy" : "blue"
-    }
-);
-
+getJson();
