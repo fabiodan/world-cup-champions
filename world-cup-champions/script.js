@@ -34,12 +34,7 @@ var worldCupChampions = {
 	 * http://www.redips.net/javascript/random-color-generator/
 	 */
 	randomColor : function() {
-	    var hex = '0123456789ABCDEF'.split(''),
-	        color = '#', i;
-	    for (i = 0; i < 6 ; i++) {
-	        color = color + hex[Math.floor(Math.random() * 16)];
-	    }
-	    return color;
+    	return '#' + ('00000' + (Math.random() * 16777216 << 0).toString(16)).substr(-6);
 	},
 	
 	// To do: refactoring this method.
