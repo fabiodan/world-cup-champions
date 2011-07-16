@@ -1,5 +1,7 @@
 var worldCupChampions = {
-	init : function() {
+	teamsColors : null,
+	init : function(teamsColors) {
+		this.teamsColors = teamsColors;
 		this.getJson();
 	},
 	getJson : function() {
@@ -24,8 +26,7 @@ var worldCupChampions = {
 	    for (var i in json) {
 	        (i % 2 == 1) && (data[json[i - 1]] = json[i]);
 	    }
-
-		this.buildGraph(data, {"Brazil" : "green", "Italy" : "blue"});
+		this.buildGraph(data);
 	},
 
 	/*
@@ -40,13 +41,13 @@ var worldCupChampions = {
 	    }
 	    return color;
 	},
-	buildGraph : function(data, teamsColors) {
+	buildGraph : function(data) {
 		var graph = document.getElementById("graph"),
 			ctx = graph.getContext("2d"),
 			years = document.querySelectorAll("#years li"), // To do: generate the elements dinamically relying on json data.
 			teams = document.querySelectorAll("#teams li"),
 			graphHeight = graph.offsetHeight,
-	    	memo = teamsColors || {};
+	    	memo = this.teamsColors || {};
 
 	    for (var i = 0; i < years.length; i++) {
 
@@ -85,4 +86,4 @@ var worldCupChampions = {
 	}
 };
 
-worldCupChampions.init();
+worldCupChampions.init({"Brazil" : "green", "Italy" : "blue"});
