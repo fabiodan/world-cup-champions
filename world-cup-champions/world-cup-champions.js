@@ -2,7 +2,7 @@ var worldCupChampions = {
 	data : {},
 	colors : null,
 	init : function(colors) {
-		this.colors = colors;
+		this.colors = colors || {};
 		this.getJson();
 	},
 	getJson : function() {
@@ -61,7 +61,7 @@ var worldCupChampions = {
 			years = document.querySelectorAll("#years li"),
 			teams = document.querySelectorAll("#teams li"),
 			graphHeight = graph.offsetHeight,
-	    	colors = this.colors || {};
+	    	colors = this.colors;
 
 		// Cleaning the canvas.
 		ctx.clearRect (0, 0, 1000, 500);
@@ -92,7 +92,7 @@ var worldCupChampions = {
 	                ctx.fillStyle = colors[team];
 					
 					// Highlight on mouseover.
-					team == target ? ctx.globalAlpha = 1 : ctx.globalAlpha = 0.3;
+					ctx.globalAlpha = (team == target) && 1 || 0.3;
 									
 	                // Drawing the graph.
 	                ctx.beginPath();
