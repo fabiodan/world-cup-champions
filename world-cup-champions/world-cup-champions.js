@@ -1,6 +1,6 @@
 var worldCupChampions = {
 	data : {},
-	colors : null,
+	colors : {},
 	init : function(colors) {
 		this.colors = colors || {};
 		this.getJson();
@@ -26,7 +26,7 @@ var worldCupChampions = {
 	    for (var i in json) {
 	        (i % 2 == 1) && (this.data[json[i - 1]] = json[i]);
 	    }
-		this.buildGraph();
+		this.buildDom();
 	},
 
 	/*
@@ -50,12 +50,11 @@ var worldCupChampions = {
 		}
 		document.querySelector("#years").innerHTML = htmlYears;
 		document.querySelector("#teams").innerHTML = htmlTeams;
+		this.buildGraph();		
 	},
 
-	// To do: Draw the target lines only in the end.
+	// To do: Draw the target lines first.
 	buildGraph : function(target) {
-		this.buildDom();
-
 		var graph = document.querySelector("#graph"),
 			ctx = graph.getContext("2d"),
 			years = document.querySelectorAll("#years li"),
@@ -65,9 +64,6 @@ var worldCupChampions = {
 
 		// Cleaning the canvas.
 		ctx.clearRect (0, 0, 1000, 500);
-
-		// Adding a mouseover listener on the teams.
-		document.querySelector("#teams").onmouseover = this.mouseoverHandler;
 
 	    for (var i = 0; i < years.length; i++) {
 
@@ -104,7 +100,10 @@ var worldCupChampions = {
 	                ctx.fill();
 	            }
 	        }
-	    }		
+	    }	
+
+		// Adding a mouseover listener on the teams.
+		document.querySelector("#teams").onmouseover = this.mouseoverHandler;
 	},
 	mouseoverHandler : function(e) {
 		worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
