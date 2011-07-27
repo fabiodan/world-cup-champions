@@ -58,55 +58,38 @@ var worldCupChampions = {
 
 	// To do: Refactoring this method.
 	buildGraph : function(target) {
-		var graph = document.querySelector("#graph"),
+		var that = this,
+			graph = document.querySelector("#graph"),
 			ctx = graph.getContext("2d"),
 			years = document.querySelectorAll("#years li"),
 			teams = document.querySelectorAll("#teams li"),
 			graphWidth = graph.offsetWidth,
 			graphHeight = graph.offsetHeight,
-	    	colors = this.colors;
+	    	colors = this.colors,
+			target = target || false;
 
 		// Cleaning the canvas.
 		ctx.clearRect (0, 0, graphWidth, graphHeight);
 
-	    for (var i = 0; i < years.length; i++) {
+		function getCoordinates(drawHighlight) {
+			function drawCanvas() {
+				
+                // Initializing graph properties.
+                ctx.fillStyle = colors[team];
 
-	        // Getting the "year" element coordinates.
-	        var year = years[i].firstChild.nodeValue,
-	            yearLeftPos = years[i].offsetLeft,
-	            yearRightPos = yearLeftPos + years[i].offsetWidth;
+				// Highlight on mouseover.
+				ctx.globalAlpha = (team == target) && 1 || 0.3;
 
-	        for (var j = 0; j < teams.length; j++) {        
-	            var team = teams[j].firstChild.nodeValue;
+                // Drawing the canvas.
+                ctx.beginPath();
+                ctx.moveTo(yearLeftPos, 0);
+                ctx.lineTo(yearRightPos, 0);
+                ctx.quadraticCurveTo(graphHeight/2, graphHeight/2, teamRightPos, graphHeight);
+                ctx.lineTo(teamLeftPos, graphHeight);
+                ctx.quadraticCurveTo(graphHeight/2, graphHeight/2, yearLeftPos, 0);
+                ctx.fill();
+			}
 
-	            // Setting one color for each team.
-	            !colors[team] && (colors[team] = this.randomColor());
-
-	            if (team == this.data[year]) {
-
-			        // Getting the "team" element coordinates.
-	                var teamLeftPos = teams[j].offsetLeft,
-	                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
-
-	                // Initializing graph properties.
-	                ctx.fillStyle = colors[team];
-					
-					// Highlight on mouseover.
-					ctx.globalAlpha = (team == target) && 1 || 0.3;
-									
-	                // Drawing the graph.
-	                ctx.beginPath();
-	                ctx.moveTo(yearLeftPos, 0);
-	                ctx.lineTo(yearRightPos, 0);
-	                ctx.quadraticCurveTo(graphHeight/2, graphHeight/2, teamRightPos, graphHeight);
-	                ctx.lineTo(teamLeftPos, graphHeight);
-	                ctx.quadraticCurveTo(graphHeight/2, graphHeight/2, yearLeftPos, 0);
-	                ctx.fill();
-	            }
-	        }
-	    }	
-
-		if (target) {
 		    for (var i = 0; i < years.length; i++) {
 
 		        // Getting the "year" element coordinates.
@@ -118,35 +101,41 @@ var worldCupChampions = {
 		            var team = teams[j].firstChild.nodeValue;
 
 		            // Setting one color for each team.
-		            !colors[team] && (colors[team] = this.randomColor());
-					
-					if (team == target) {
+		            !colors[team] && (colors[team] = that.randomColor());
 
-			            if (team == this.data[year]) {
-						
+					if (!drawHighlight) {
+			            if (team == that.data[year]) {
+
 					        // Getting the "team" element coordinates.
 			                var teamLeftPos = teams[j].offsetLeft,
 			                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
 
-			                // Initializing graph properties.
-			                ctx.fillStyle = colors[team];
+							// Drawing the graph.
+							drawCanvas();
+			            }						
+					}
 
-							// Highlight on mouseover.
-							ctx.globalAlpha = 1;
+					// Redrawing the selected team.
+					else if (target == team) {
+			            if (team == that.data[year]) {
 
-			                // Drawing the graph.
-			                ctx.beginPath();
-			                ctx.moveTo(yearLeftPos, 0);
-			                ctx.lineTo(yearRightPos, 0);
-			                ctx.quadraticCurveTo(graphHeight/2, graphHeight/2, teamRightPos, graphHeight);
-			                ctx.lineTo(teamLeftPos, graphHeight);
-			                ctx.quadraticCurveTo(graphHeight/2, graphHeight/2, yearLeftPos, 0);
-			                ctx.fill();
-			            }
+					        // Getting the "team" element coordinates.
+			                var teamLeftPos = teams[j].offsetLeft,
+			                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
+
+							// Drawing the graph.
+							drawCanvas();
+			            }					
 					}
 		        }
 		    }			
 		}
+
+		getCoordinates();
+		
+		// Calling the function again for selected team redrawing.
+		target && getCoordinates(true);
+		
 	},
 	mouseoverHandler : function(e) {
 		worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
