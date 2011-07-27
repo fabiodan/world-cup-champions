@@ -73,12 +73,12 @@ var worldCupChampions = {
 
 		function getCoordinates(drawHighlight) {
 			function drawCanvas() {
-				
-                // Initializing graph properties.
-                ctx.fillStyle = colors[team];
+
+				// Initializing graph properties.
+				ctx.fillStyle = target ? ((team == target) && colors[team] || "#DDD") : colors[team];
 
 				// Highlight on mouseover.
-				ctx.globalAlpha = (team == target) && 1 || 0.3;
+				ctx.globalAlpha = 0.3;
 
                 // Drawing the canvas.
                 ctx.beginPath();
