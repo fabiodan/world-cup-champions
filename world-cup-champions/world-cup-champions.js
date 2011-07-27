@@ -51,8 +51,10 @@ var worldCupChampions = {
 		document.querySelector("#years").innerHTML = htmlYears;
 		document.querySelector("#teams").innerHTML = htmlTeams;
 
-		// Adding a mouseover listener on the teams.
+		// Adding a mouseover and a mouseout listener on the teams.
 		document.querySelector("#teams").onmouseover = this.mouseoverHandler;
+		document.querySelector("#teams").onmouseout = this.mouseoutHandler;
+
 		this.buildGraph();		
 	},
 
@@ -103,42 +105,40 @@ var worldCupChampions = {
 		            // Setting one color for each team.
 		            !colors[team] && (colors[team] = that.randomColor());
 
-					if (!drawHighlight) {
-			            if (team == that.data[year]) {
+		            if (!drawHighlight && team == that.data[year]) {
 
-					        // Getting the "team" element coordinates.
-			                var teamLeftPos = teams[j].offsetLeft,
-			                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
+				        // Getting the "team" element coordinates.
+		                var teamLeftPos = teams[j].offsetLeft,
+		                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
 
-							// Drawing the graph.
-							drawCanvas();
-			            }						
-					}
+						// Drawing the graph.
+						drawCanvas();
+		            }						
 
 					// Redrawing the selected team.
-					else if (target == team) {
-			            if (team == that.data[year]) {
+					else if (target == team && team == that.data[year]) {
 
-					        // Getting the "team" element coordinates.
-			                var teamLeftPos = teams[j].offsetLeft,
-			                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
+				        // Getting the "team" element coordinates.
+		                var teamLeftPos = teams[j].offsetLeft,
+		                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
 
-							// Drawing the graph.
-							drawCanvas();
-			            }					
+						// Drawing the graph.
+						drawCanvas();
 					}
 		        }
 		    }			
 		}
-
 		getCoordinates();
 		
-		// Calling the function again for selected team redrawing.
+		// Calling the function again to redraw the highlight context.
 		target && getCoordinates(true);
 		
 	},
 	mouseoverHandler : function(e) {
-		worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
+		(e.target.id != "teams") && worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
+	},
+	mouseoutHandler : function(e) {
+		(e.relatedTarget.id != "teams") && worldCupChampions.buildGraph();
 	}
 };
 
