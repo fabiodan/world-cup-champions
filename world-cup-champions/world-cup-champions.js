@@ -156,4 +156,4 @@ var worldCupChampions = {
 	}
 };
 
-worldCupChampions.init({"Brazil" : "green", "Italy" : "blue", "Spain" : "#C60B1E", "West Germany" : "#FFCE00"});
+worldCupChampions.init({"Uruguay" : "magenta", "Argentina" : "blueviolet", "Brazil" : "green", "Italy" : "blue", "Spain" : "darkred", "West Germany" : "goldenrod", "England" : "red", "France" : "steelblue"});
