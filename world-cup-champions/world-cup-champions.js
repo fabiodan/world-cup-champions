@@ -39,7 +39,10 @@ var worldCupChampions = {
 	buildDom : function() {
 		var htmlYears = "",
 			htmlTeams = "",
-			memo = {};
+			memo = {},
+			yearsList = document.querySelector("#years"),
+			teamsList = document.querySelector("#teams");
+			
 
 		for (var i in this.data) {
 			htmlYears += "<li>" + i + "</li>";
@@ -48,17 +51,17 @@ var worldCupChampions = {
 				htmlTeams += "<li>" + this.data[i] + "</li>";				
 			}
 		}
-		document.querySelector("#years").innerHTML = htmlYears;
-		document.querySelector("#teams").innerHTML = htmlTeams;
+		
+		// Populating the lists with the content.
+		yearsList.innerHTML = htmlYears;
+		teamsList.innerHTML = htmlTeams;
 
-		// Adding a mouseover and a mouseout listener on the teams.
-		document.querySelector("#teams").onmouseover = this.mouseoverHandler;
-		document.querySelector("#teams").onmouseout = this.mouseoutHandler;
+		// Adding a mouseover and a mouseout listener on the years and teams.
+		yearsList.onmouseover = teamsList.onmouseover = this.mouseoverHandler;
+		yearsList.onmouseout = teamsList.onmouseout = this.mouseoutHandler;
 
 		this.buildGraph();		
 	},
-
-	// To do: Refactoring this method.
 	buildGraph : function(target) {
 		var that = this,
 			graph = document.querySelector("#graph"),
@@ -76,8 +79,8 @@ var worldCupChampions = {
 		function getCoordinates(drawHighlight) {
 			function drawCanvas() {
 
-				// Initializing graph properties.
-				ctx.fillStyle = target ? ((team == target) && colors[team] || "#DDD") : colors[team];
+				// Coloring the selected teams/years lines, or coloring all lines if there is no selection. 
+				ctx.fillStyle = target ? ((target == team || target == year) && colors[team] || "#DDD") : colors[team];
 
 				// Highlight on mouseover.
 				ctx.globalAlpha = 0.3;
@@ -125,6 +128,17 @@ var worldCupChampions = {
 						// Drawing the graph.
 						drawCanvas();
 					}
+
+					// Redrawing the selected year.
+					else if (target == year && team == that.data[year]) {
+
+				        // Getting the "team" element coordinates.
+		                var teamLeftPos = teams[j].offsetLeft,
+		                	teamRightPos = teamLeftPos + teams[j].offsetWidth;
+
+						// Drawing the graph.
+						drawCanvas();
+					}
 		        }
 		    }			
 		}
@@ -135,10 +149,10 @@ var worldCupChampions = {
 		
 	},
 	mouseoverHandler : function(e) {
-		(e.target.id != "teams") && worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
+		(e.target.id != this.id) && worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
 	},
 	mouseoutHandler : function(e) {
-		(e.relatedTarget.id != "teams") && worldCupChampions.buildGraph();
+		(e.relatedTarget.id != this.id) && worldCupChampions.buildGraph();
 	}
 };
 
