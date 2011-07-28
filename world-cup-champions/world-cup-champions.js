@@ -152,7 +152,7 @@ var worldCupChampions = {
 		(e.target.id != this.id) && worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
 	},
 	mouseoutHandler : function(e) {
-		(e.relatedTarget.id != this.id) && worldCupChampions.buildGraph();
+		(e.relatedTarget && e.relatedTarget.id != this.id) && worldCupChampions.buildGraph();
 	}
 };
 
