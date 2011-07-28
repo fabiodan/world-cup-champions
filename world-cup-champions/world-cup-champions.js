@@ -149,10 +149,10 @@ var worldCupChampions = {
 		
 	},
 	mouseoverHandler : function(e) {
-		(e.target.id != this.id) && worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
+		(e.target != this) && worldCupChampions.buildGraph(e.target.firstChild.nodeValue);
 	},
 	mouseoutHandler : function(e) {
-		(e.relatedTarget && e.relatedTarget.id != this.id) && worldCupChampions.buildGraph();
+		(e.relatedTarget != this) && worldCupChampions.buildGraph();
 	}
 };
 
