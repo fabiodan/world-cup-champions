@@ -1,0 +1,5 @@
+body { font-family: helvetica; text-align: center;}  
+section { width: 900px; position: relative; margin: 0 auto; }
+h1 { font-weight: bold; text-align: center; padding: 10px; }  
+ul { display: inline-block; }
+ul li { display: inline-block; text-align: center; margin: 0 5px; cursor: pointer; }
